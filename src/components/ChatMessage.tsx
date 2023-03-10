@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import {motion} from 'framer-motion'
 type Props = {
-  message?: {
+  message: {
     name: string;
     message: string;
     time: number;
@@ -13,17 +13,6 @@ type Props = {
 };
 
 const ChatMessage = ({ message }: Props) => {
-
-  if (!message) {
-    message = {
-      name: "GPT3.5 trubo",
-      avatar: "/react.svg",
-      id: "random",
-      message: "你好",
-      time: Date.now(),
-      status: "Thinking",
-    };
-  }
   const isRobot = (message?.name === "GPT3.5 trubo");
   return (
     <motion.div

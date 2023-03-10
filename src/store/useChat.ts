@@ -2,11 +2,11 @@ import produce from "immer";
 import { nanoid } from "nanoid";
 import { create } from "zustand";
 
-type Message = {
-  name: string;
+export type Message = {
+    name: string;
     message: string;
     time: number;
-    avatar?: string;
+    avatar: string;
     id: string;
     status:  "Thinking"| "typing" | "done" |'error'
 };
