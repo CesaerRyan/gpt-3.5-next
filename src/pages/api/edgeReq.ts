@@ -8,7 +8,6 @@ export const config = {
 export default async function handler(req: NextRequest,
     ) {
       const body :CreateChatCompletionRequest  = await req.json();
-      console.log(body)
       const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -19,7 +18,5 @@ export default async function handler(req: NextRequest,
           model: "gpt-3.5-turbo",
         } as CreateChatCompletionRequest),
       })
-
-
   return new Response(res.body)
 }

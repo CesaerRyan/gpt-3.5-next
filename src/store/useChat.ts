@@ -47,6 +47,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         if (chat) {
           chat.message += message;
         }
+        else{
+          draft.chats.push({
+            id: chatId,
+            message,
+            time: Date.now(),
+            name: "GPT3.5 trubo",
+            status:'typing',
+            avatar: '/react.svg'
+          });
+        }
       })
     ),
 }));

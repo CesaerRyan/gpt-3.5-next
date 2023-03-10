@@ -10,6 +10,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.16",
     "daisyui": "^2.51.3",
+    "eventsource-parser": "^0.1.0",
     "framer-motion": "^10.2.3",
     "immer": "^9.0.19",
     "nanoid": "^4.0.1",

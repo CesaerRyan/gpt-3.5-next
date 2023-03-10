@@ -5,9 +5,11 @@ import { useChatStore } from "../store/useChat";
 import {
   ChatCompletionRequestMessage,
   CreateChatCompletionRequest,
+  CreateChatCompletionResponse,
 } from "openai";
+import { createParser} from "eventsource-parser";
 export const ChatInput = () => {
-  const { chats, addMessage } = useChatStore();
+  const { chats, addMessage,streamingMessage } = useChatStore();
   const [prompt, setPrompt] = useState("");
 
   const addChatMessage = (e: React.FormEvent) => {
@@ -25,20 +27,42 @@ export const ChatInput = () => {
 
   };
 
-  const sendRequest = (messages: ChatCompletionRequestMessage[]) => {
+  const sendRequest = async (messages: ChatCompletionRequestMessage[]) => {
     const resBody = {
       messages: messages,
       model: "gpt-3.5-turbo",
       n: 1,
+      stream:true
     } as CreateChatCompletionRequest;
-    const req = fetch("/api/edgeReq",{
+    const response = await fetch("/api/edgeReq",{
       method: "POST",
       body:JSON.stringify(resBody)
     });
     
-    req.then(async (res)=>{
-      console.log(await res.text())
+    const reader = response.body?.getReader();
+    const parser =  createParser((event)=>{
+        if (event.type ==='event'){
+          try{
+            const json = JSON.parse(event.data) ;
+            const text = json.choices[0].delta?.content || "";
+            text && streamingMessage(json.id, text)
+          }catch(e){
+            // skip
+          }
+          if (event.data === '[DONE]'){
+            // loading 
+          }
+        }
+
     })
+
+    while (true){
+      const {value,done} = await reader!.read()
+      if (done) break;
+      parser.feed(Buffer.from(value).toString('utf-8'))
+    }
+
+  
   };
 
   return (
