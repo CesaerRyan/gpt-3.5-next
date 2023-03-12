@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+import { shallow } from 'zustand/shallow'
 import { useChatStore } from "../store/useChat";
 import {
   ChatCompletionRequestMessage,
@@ -9,7 +10,8 @@ import {
 } from "openai";
 import { createParser} from "eventsource-parser";
 export const ChatInput = () => {
-  const { chats, addMessage,streamingMessage } = useChatStore();
+  const [addMessage,streamingMessage] = useChatStore((state)=>[state.addMessage,state.streamingMessage],shallow);
+  const chats = useChatStore(state=>state.chats)
   const [prompt, setPrompt] = useState("");
 
   const addChatMessage = (e: React.FormEvent) => {
@@ -18,52 +20,13 @@ export const ChatInput = () => {
     addMessage({
       message: prompt,
     });
-
-    sendRequest([
-      {content:prompt,role:'user',name:'Haodong'}
-    ])
+   
     setPrompt("");
-
-
   };
 
-  const sendRequest = async (messages: ChatCompletionRequestMessage[]) => {
-    const resBody = {
-      messages: messages,
-      model: "gpt-3.5-turbo",
-      n: 1,
-      stream:true
-    } as CreateChatCompletionRequest;
-    const response = await fetch("/api/edgeReq",{
-      method: "POST",
-      body:JSON.stringify(resBody)
-    });
-    
-    const reader = response.body?.getReader();
-    const parser =  createParser((event)=>{
-        if (event.type ==='event'){
-          try{
-            const json = JSON.parse(event.data) ;
-            const text = json.choices[0].delta?.content || "";
-            text && streamingMessage(json.id, text)
-          }catch(e){
-            // skip
-          }
-          if (event.data === '[DONE]'){
-            // loading 
-          }
-        }
+ 
 
-    })
 
-    while (true){
-      const {value,done} = await reader!.read()
-      if (done) break;
-      parser.feed(Buffer.from(value).toString('utf-8'))
-    }
-
-  
-  };
 
   return (
     <form className="bg-neutral flex items-center" onSubmit={addChatMessage}>

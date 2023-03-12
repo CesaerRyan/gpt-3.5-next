@@ -1,6 +1,6 @@
 import '../global.css'
 export const metadata = {
-  title: 'GPT3.5 tester',
+  title: '可对话版 GPT ',
   description: 'learn chatGPT 3.5 and Next.js',
 }
 

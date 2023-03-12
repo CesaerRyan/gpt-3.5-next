@@ -13,7 +13,7 @@ type Props = {
 };
 
 const ChatMessage = ({ message }: Props) => {
-  const isRobot = (message?.name === "GPT3.5 trubo");
+  const isRobot = (message?.name === "GPT");
   return (
     <motion.div
     animate={{ y: 0,opacity:1}}

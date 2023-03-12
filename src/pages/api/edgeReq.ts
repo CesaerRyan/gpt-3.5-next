@@ -18,5 +18,5 @@ export default async function handler(req: NextRequest,
           model: "gpt-3.5-turbo",
         } as CreateChatCompletionRequest),
       })
-  return new Response(res.body)
+  return res
 }
